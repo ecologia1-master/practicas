@@ -1,0 +1,7 @@
+Localidad,lon,lat,MAT,MAP_mm,MAP_cm,Bioma,Especie_Dominante
+localidad_A,-60,-3,26.9,2323,232.3,Tropical seasonal forest/savanna,Especie típica del bioma
+localidad_B,10,20,26.3,18,1.8,Subtropical desert,Larrea tridentata
+localidad_C,37,-2,20.2,548,54.8,Subtropical desert,Larrea tridentata
+localidad_D,-150,61,2.2,881,88.1,Boreal forest,Picea mariana
+localidad_E,0,52,9.5,623,62.3,Woodland/shrubland,Quercus coccifera
+localidad_F,-71,-49,7.5,156,15.6,Temperate grassland/desert,Stipa spp.
