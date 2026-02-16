@@ -1,0 +1,136 @@
+---
+title: "Título del manuscrito (informativo, no \"Práctica X\")"
+author:
+  - "Nombre Apellido (Matrícula XXXXX)"
+course: "Ecología I (BIO-2450)"
+practice: "Práctica: "
+date: "`r format(Sys.Date(), '%Y-%m-%d')`"
+output:
+  bookdown::pdf_document2:
+    # toc: true
+    # toc_depth: 3
+    number_sections: false
+    fig_caption: yes
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5,
+  out.width = "100%"
+)
+set.seed(123)
+
+# Paquetes (ajusta según el ejercicio elegido)
+pkg_needed <- c("vegan", "cluster", "indicspecies", "adespatial",
+                "iNEXT", "SpadeR", "ggplot2", "dplyr", "tidyr", "readr")
+has_pkg <- sapply(pkg_needed, requireNamespace, quietly = TRUE)
+if (!all(has_pkg)) {
+  message("Paquetes no críticos ausentes (se omitirán bloques opcionales): ",
+          paste(names(has_pkg)[!has_pkg], collapse = ", "))
+}
+invisible(sapply(names(has_pkg)[has_pkg], library, character.only = TRUE))
+```
+
+<!-- ===========================================================
+REGLAS DE LA PRÁCTICA (resumen operativo)
+- Producto: manuscrito reproducible + presentación oral (17 + 3).
+- Individual o pareja: cada integrante debe dominar todo.
+- IA: se permite como apoyo, pero TODO debe ser verificable y trazable.
+- Puedes usar esta plantilla o cualquier otra de tu preferencia.
+- El código que aparece en esta plantilla es una base de ejemplo genérica, probablemente no aplica a tu caso.
+=========================================================== -->
+
+# Resumen (Abstract)
+
+<!-- **Escribe 150–250 palabras.** -->
+<!-- Incluye: (i) problema, (ii) datos, (iii) técnica principal, (iv) 1–2 hallazgos, (v) conclusión principal y 1 limitación. -->
+
+**Palabras clave:** `palabra1; palabra2; palabra3; ...`
+
+# 1. Introducción
+
+<!--
+OBJETIVO: llevar al lector de lo general a lo específico y terminar con preguntas/hipótesis claras.
+
+Incluye, en este orden sugerido:
+(i) Contexto general (por qué el tema importa en Ecología).
+(ii) Brecha/problema (qué falta por entender/medir/comparar).
+(iii) Sistema de estudio (dónde/qué organismo/comunidad; por qué es un buen caso).
+(iv) Objetivos y/o preguntas (1–3) y, si aplica, hipótesis/predicciones (comprobables).
+(v) Cierre operativo: “Para responder a esto, analizamos…” (1–2 oraciones).
+
+Reglas prácticas:
+- NO metas resultados aquí.
+- NO describas software/paquetes (eso va en Métodos).
+- Cada objetivo/hipótesis debe conectar con un análisis que luego aparezca en Métodos y Resultados.
+-->
+
+# 2. Materiales y métodos
+
+<!--
+OBJETIVO: que otra persona pueda reproducir tu análisis (con tus datos o datos equivalentes).
+
+Incluye (elige lo que aplique, pero NO omitas lo esencial):
+(i) Área/sistema y unidad de muestreo (parcelas, transectos, puntos, etc.).
+(ii) Datos: qué variables se registraron y en qué formato (matriz especies×muestras, ambientales, etc.).
+(iii) Diseño y esfuerzo: n de muestras, fechas, criterios de selección, controles de calidad.
+(iv) Preparación de datos: transformaciones, estandarización, filtrados, manejo de NA, rarefacción (si aplica).
+(v) Métricas: qué calculaste (riqueza, Shannon, Bray-Curtis, etc.) y cómo se definieron.
+(vi) Análisis estadísticos: pruebas/modelos/ordenaciones en el MISMO orden que luego reportarás en Resultados.
+(vii) Software: R + paquetes clave y versión (solo lo que realmente usaste).
+
+Reglas prácticas:
+- No cuentes “lo que salió” (eso va en Resultados).
+- Reporta siempre “qué comparas”, “con qué método” y “con qué criterio” (p.ej., alpha=0.05, permutaciones=999).
+- Si hay figuras/tablas de métodos (mapa, diagrama de muestreo), cítalas aquí.
+-->
+
+# 3. Resultados
+
+<!-- Presenta resultados en el mismo orden que Métodos. -->
+<!-- Cada figura/tabla debe tener: (i) qué muestra, (ii) resultado clave, (iii) vínculo con preguntas. -->
+
+# 4. Discusión
+
+<!--
+OBJETIVO: interpretar y dar sentido ecológico a los hallazgos, conectándolos con teoría y literatura.
+
+Incluye:
+(i) Respuesta directa a cada pregunta/hipótesis (sin repetir tablas; enfócate en el mensaje).
+(ii) Interpretación ecológica: mecanismos plausibles (sin afirmar causalidad si tu diseño no lo permite).
+(iii) Comparación con estudios previos: coincidencias y discrepancias (explica posibles razones).
+(iv) Limitaciones: muestreo, escala, sesgos, supuestos de métodos (1 párrafo corto).
+(v) Implicaciones: qué aporta tu estudio (manejo, conservación, monitoreo, metodología) y qué sigue.
+
+Reglas prácticas:
+- NO introduzcas resultados nuevos.
+- Distingue claramente entre evidencia (lo que muestran tus datos) e interpretación (lo que podría explicar el patrón).
+-->
+
+# 5. Conclusiones
+
+<!--
+OBJETIVO: cerrar con mensajes finales claros y “transportables”.
+
+Incluye (ideal 3–6 bullets o 1 párrafo breve):
+(i) 2–4 conclusiones principales (una por pregunta/hipótesis).
+(ii) Una implicación práctica o científica (por qué importa).
+(iii) Una limitación clave (solo una) y un siguiente paso concreto.
+
+Reglas prácticas:
+- Sin citas largas ni discusión extensa.
+- Sin resultados nuevos.
+-->
+
+# Referencias
+
+<!-- Si usas bibliografía con .bib, activa:
+bibliography: referencias.bib
+y cita con [@clave] -->
+
