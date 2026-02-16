@@ -5,6 +5,8 @@ Arlen Marmolejo Hernández
 
 ### **Práctica II – Eco-Inferencia: Modelando la relación clima-vegetación con R**
 
+![](practica-2-ecoinferencia_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+
 ## **Unidad II – Ecosistemas y sus componentes**
 
 - Factores abióticos

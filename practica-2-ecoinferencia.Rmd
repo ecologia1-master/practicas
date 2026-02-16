@@ -4,8 +4,22 @@ author: Arlen Marmolejo Hernández
 output: github_document
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE
+  )
+```
+
 ### **Práctica II – Eco-Inferencia: Modelando la relación clima-vegetación con R**
- 
+
+```{r, echo=F, message=F, warning=F}
+library(plotbiomes)
+whittaker_base_plot()
+```
+
+
 ## **Unidad II – Ecosistemas y sus componentes**
 - Factores abióticos
 - Factores bióticos
