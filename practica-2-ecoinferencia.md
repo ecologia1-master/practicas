@@ -1,7 +1,9 @@
-Untitled
+Práctica II – Eco-Inferencia: Modelando la relación clima-vegetación con
+R
 ================
+Arlen Marmolejo Hernández
 
-### **Práctica II – Eco-Inferencia: Modelando la relación clima-vegetación con R**
+# **Práctica II – Eco-Inferencia: Modelando la relación clima-vegetación con R**
 
 ## **Unidad II – Ecosistemas y sus componentes**
 

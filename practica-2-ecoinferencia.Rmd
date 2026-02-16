@@ -1,9 +1,10 @@
 ---
-title: "Untitled"
+title: "Práctica II – Eco-Inferencia: Modelando la relación clima-vegetación con R"
+author: Arlen Marmolejo Hernández
 output: github_document
 ---
 
-### **Práctica II – Eco-Inferencia: Modelando la relación clima-vegetación con R**
+# **Práctica II – Eco-Inferencia: Modelando la relación clima-vegetación con R**
  
 ## **Unidad II – Ecosistemas y sus componentes**
 
