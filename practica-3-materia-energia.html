@@ -370,6 +370,51 @@ ecológico y preparar un informe breve.</p>
 <h2>Los Datos</h2>
 <p>Primero, cargar los datos específicos para su ecosistema. Cada grupo
 trabajará un escenario (1, 2 o 3).</p>
+<pre class="r"><code># Cargamos las librerías necesarias
+library(ggplot2)
+library(dplyr)
+
+# Se les indicará qué número de escenario deben usar.
+# Escenario 1: Exceso de Nitrógeno
+# Escenario 2: Deforestación
+# Escenario 3: Sobrepesca
+# Por favor, descomente la línea correspondiente a su escenario.
+
+escenario &lt;- 1
+# escenario &lt;- 2
+# escenario &lt;- 3
+
+# Simulación de datos (en un caso real, podrían ser archivos .csv)
+# NO MODIFICAR ESTE BLOQUE
+set.seed(123) # Para que los datos sean reproducibles
+
+if(escenario == 1){
+  datos_biomasa &lt;- data.frame(
+    Nivel_Trófico = factor(c(&quot;Productores&quot;, &quot;Herbívoros&quot;, &quot;Carnívoros 1&quot;, &quot;Carnívoros 2&quot;), 
+                           levels = c(&quot;Productores&quot;, &quot;Herbívoros&quot;, &quot;Carnívoros 1&quot;, &quot;Carnívoros 2&quot;)),
+    Biomasa = c(1200, 140, 18, 2.2)
+  )
+  ciclo_alterado &lt;- &quot;Exceso de Nitrógeno (N) en agua y suelo&quot;
+  valor_nutriente &lt;- 5.5 # mg/L, por encima de lo normal (2.5)
+  
+} else if(escenario == 2){
+  datos_biomasa &lt;- data.frame(
+    Nivel_Trófico = factor(c(&quot;Productores&quot;, &quot;Herbívoros&quot;, &quot;Carnívoros 1&quot;, &quot;Carnívoros 2&quot;), 
+                           levels = c(&quot;Productores&quot;, &quot;Herbívoros&quot;, &quot;Carnívoros 1&quot;, &quot;Carnívoros 2&quot;)),
+    Biomasa = c(300, 140, 18, 2.2)
+  )
+  ciclo_alterado &lt;- &quot;Perturbación del ciclo del Agua (escorrentía y disminución de productores)&quot;
+  valor_nutriente &lt;- NA
+  
+} else if(escenario == 3){
+  datos_biomasa &lt;- data.frame(
+    Nivel_Trófico = factor(c(&quot;Productores&quot;, &quot;Herbívoros&quot;, &quot;Carnívoros 1 (Piscívoros)&quot;, &quot;Carnívoros 2&quot;), 
+                           levels = c(&quot;Productores&quot;, &quot;Herbívoros&quot;, &quot;Carnívoros 1 (Piscívoros)&quot;, &quot;Carnívoros 2&quot;)),
+    Biomasa = c(1500, 180, 4, 2.2)
+  )
+  ciclo_alterado &lt;- &quot;Sobrepesca de peces zooplanctívoros (Nivel de Carnívoro 1)&quot;
+  valor_nutriente &lt;- 2.6 # mg/L, normal
+}</code></pre>
 <p><strong>El ecosistema asignado a su grupo es el Escenario 1. La
 principal alteración detectada es: Exceso de Nitrógeno (N) en agua y
 suelo.</strong></p>

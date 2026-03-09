@@ -7,9 +7,6 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
-# Cargamos las librerías necesarias
-library(ggplot2)
-library(dplyr)
 ```
 
 ## Contexto y Rol
@@ -22,14 +19,18 @@ Analizar estos datos, diagnosticar la posible causa del estrés ecológico y pre
 
 Primero, cargar los datos específicos para su ecosistema. Cada grupo trabajará un escenario (1, 2 o 3).
 
-```{r, echo=FALSE}
+```{r, echo=TRUE}
+# Cargamos las librerías necesarias
+library(ggplot2)
+library(dplyr)
+
 # Se les indicará qué número de escenario deben usar.
 # Escenario 1: Exceso de Nitrógeno
 # Escenario 2: Deforestación
 # Escenario 3: Sobrepesca
 # Por favor, descomente la línea correspondiente a su escenario.
 
-# escenario <- 1
+escenario <- 1
 # escenario <- 2
 # escenario <- 3
 
