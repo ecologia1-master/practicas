@@ -30,7 +30,7 @@ library(dplyr)
 # Escenario 3: Sobrepesca
 # Por favor, descomente la línea correspondiente a su escenario.
 
-# escenario <- 1
+ escenario <- 1
 # escenario <- 2
 # escenario <- 3
 
@@ -40,25 +40,25 @@ set.seed(123) # Para que los datos sean reproducibles
 
 if(escenario == 1){
   datos_biomasa <- data.frame(
-    Nivel_Trófico = factor(c("Productores", "Herbívoros", "Carnívoros 1", "Carnívoros 2"), 
+    Nivel_Trófico = factor(c("Productores", "Herbívoros", "Carnívoros 1", "Carnívoros 2"),
                            levels = c("Productores", "Herbívoros", "Carnívoros 1", "Carnívoros 2")),
     Biomasa = c(1200, 140, 18, 2.2)
   )
   ciclo_alterado <- "Exceso de Nitrógeno (N) en agua y suelo"
   valor_nutriente <- 5.5 # mg/L, por encima de lo normal (2.5)
-  
+
 } else if(escenario == 2){
   datos_biomasa <- data.frame(
-    Nivel_Trófico = factor(c("Productores", "Herbívoros", "Carnívoros 1", "Carnívoros 2"), 
+    Nivel_Trófico = factor(c("Productores", "Herbívoros", "Carnívoros 1", "Carnívoros 2"),
                            levels = c("Productores", "Herbívoros", "Carnívoros 1", "Carnívoros 2")),
     Biomasa = c(300, 140, 18, 2.2)
   )
   ciclo_alterado <- "Perturbación del ciclo del Agua (escorrentía y disminución de productores)"
   valor_nutriente <- NA
-  
+
 } else if(escenario == 3){
   datos_biomasa <- data.frame(
-    Nivel_Trófico = factor(c("Productores", "Herbívoros", "Carnívoros 1 (Piscívoros)", "Carnívoros 2"), 
+    Nivel_Trófico = factor(c("Productores", "Herbívoros", "Carnívoros 1 (Piscívoros)", "Carnívoros 2"),
                            levels = c("Productores", "Herbívoros", "Carnívoros 1 (Piscívoros)", "Carnívoros 2")),
     Biomasa = c(1500, 180, 4, 2.2)
   )
@@ -66,6 +66,43 @@ if(escenario == 1){
   valor_nutriente <- 2.6 # mg/L, normal
 }
 
+# Generamos el gráfico según el escenario
+if(escenario == 1){
+  # Escenario 1: Exceso de Nitrógeno
+  nivel_normal <- 2.5 # mg/L
+  datos_indicador <- data.frame(
+    Condicion = c("Observado", "Referencia (Saludable)"),
+    Valor = c(valor_nutriente, nivel_normal)
+  )
+  
+  titulo_grafico <- "Concentración de Nitrógeno (Ciclo del N)"
+  y_label <- "Concentración (mg/L)"
+  
+} else if(escenario == 2){
+  # Escenario 2: Deforestación - Mostramos datos de precipitación/escorrentía
+  # Simulamos datos de escorrentía superficial (mm/mes)
+  escorrentia_observada <- 85 # mm/mes (alta por deforestación)
+  escorrentia_referencia <- 45 # mm/mes (valor saludable con vegetación)
+  
+  datos_indicador <- data.frame(
+    Condicion = c("Observado", "Referencia (Saludable)"),
+    Valor = c(escorrentia_observada, escorrentia_referencia)
+  )
+  
+  titulo_grafico <- "Escorrentía Superficial (Ciclo del Agua)"
+  y_label <- "Escorrentía (mm/mes)"
+  
+} else if(escenario == 3){
+  # Escenario 3: Sobrepesca - Nitrógeno normal
+  nivel_normal <- 2.5 # mg/L
+  datos_indicador <- data.frame(
+    Condicion = c("Observado", "Referencia (Saludable)"),
+    Valor = c(valor_nutriente, nivel_normal)
+  )
+  
+  titulo_grafico <- "Concentración de Nitrógeno (Ciclo del N)"
+  y_label <- "Concentración (mg/L)"
+}
 ```
 
 **El ecosistema asignado a su grupo es el Escenario `r escenario`. La principal alteración detectada es: `r ciclo_alterado`.**
@@ -123,24 +160,18 @@ ggplot(datos_largos, aes(x = Valor, y = Nivel_Trófico, fill = Nivel_Trófico)) 
 
 El equipo de campo también tomó muestras de agua y suelo. Ejecute el siguiente código para ver los niveles de nitrógeno (un nutriente clave en su ciclo).
 
-```{r datos_nutriente}
-if(!is.na(valor_nutriente)){
-  nivel_normal <- 2.5 # mg/L, valor de referencia
-  datos_nutriente <- data.frame(
-    Condicion = c("Observado", "Referencia (Saludable)"),
-    Concentracion = c(valor_nutriente, nivel_normal)
-  )
-  
-  ggplot(datos_nutriente, aes(x = Condicion, y = Concentracion, fill = Condicion)) +
-    geom_bar(stat = "identity") +
-    labs(title = "Concentración de Nitrógeno (Indicador del Ciclo del N)",
-         y = "Concentración (mg/L)") +
-    theme_minimal() +
-    theme(legend.position = "none")
-  
-} else {
-  print("No se registraron datos de nutrientes para este escenario.")
-}
+
+```{r}
+# Generamos el gráfico (funciona para todos los escenarios)
+ggplot(datos_indicador, aes(x = Condicion, y = Valor, fill = Condicion)) +
+  geom_bar(stat = "identity") +
+  labs(title = titulo_grafico,
+       subtitle = paste("Indicador ecológico - Escenario", escenario),
+       y = y_label) +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  scale_fill_manual(values = c("Observado" = "tomato", "Referencia (Saludable)" = "steelblue"))
+
 ```
 
 **Preguntas para reflexionar (individual):**
