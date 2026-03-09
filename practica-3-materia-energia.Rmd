@@ -30,7 +30,7 @@ library(dplyr)
 # Escenario 3: Sobrepesca
 # Por favor, descomente la línea correspondiente a su escenario.
 
-escenario <- 1
+# escenario <- 1
 # escenario <- 2
 # escenario <- 3
 
