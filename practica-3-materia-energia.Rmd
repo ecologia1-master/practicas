@@ -1,0 +1,177 @@
+---
+title: "Análisis de Flujo de Energía y Ciclos"
+author: "[Nombres de los integrantes]"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+# Cargamos las librerías necesarias
+library(ggplot2)
+library(dplyr)
+```
+
+## Contexto y Rol
+
+Evaluar la salud de un ecosistema insular que ha mostrado signos recientes de estrés. Se les ha proporcionado un conjunto de datos simulados que representan la biomasa en diferentes niveles tróficos y las concentraciones de nutrientes clave.
+
+Analizar estos datos, diagnosticar la posible causa del estrés ecológico y preparar un informe breve.
+
+## Los Datos
+
+Primero, cargar los datos específicos para su ecosistema. Cada grupo trabajará un escenario (1, 2 o 3).
+
+```{r, echo=FALSE}
+# Se les indicará qué número de escenario deben usar.
+# Escenario 1: Exceso de Nitrógeno
+# Escenario 2: Deforestación
+# Escenario 3: Sobrepesca
+# Por favor, descomente la línea correspondiente a su escenario.
+
+# escenario <- 1
+# escenario <- 2
+# escenario <- 3
+
+# Simulación de datos (en un caso real, podrían ser archivos .csv)
+# NO MODIFICAR ESTE BLOQUE
+set.seed(123) # Para que los datos sean reproducibles
+
+if(escenario == 1){
+  datos_biomasa <- data.frame(
+    Nivel_Trófico = factor(c("Productores", "Herbívoros", "Carnívoros 1", "Carnívoros 2"), 
+                           levels = c("Productores", "Herbívoros", "Carnívoros 1", "Carnívoros 2")),
+    Biomasa = c(1200, 140, 18, 2.2)
+  )
+  ciclo_alterado <- "Exceso de Nitrógeno (N) en agua y suelo"
+  valor_nutriente <- 5.5 # mg/L, por encima de lo normal (2.5)
+  
+} else if(escenario == 2){
+  datos_biomasa <- data.frame(
+    Nivel_Trófico = factor(c("Productores", "Herbívoros", "Carnívoros 1", "Carnívoros 2"), 
+                           levels = c("Productores", "Herbívoros", "Carnívoros 1", "Carnívoros 2")),
+    Biomasa = c(300, 140, 18, 2.2)
+  )
+  ciclo_alterado <- "Perturbación del ciclo del Agua (escorrentía y disminución de productores)"
+  valor_nutriente <- NA
+  
+} else if(escenario == 3){
+  datos_biomasa <- data.frame(
+    Nivel_Trófico = factor(c("Productores", "Herbívoros", "Carnívoros 1 (Piscívoros)", "Carnívoros 2"), 
+                           levels = c("Productores", "Herbívoros", "Carnívoros 1 (Piscívoros)", "Carnívoros 2")),
+    Biomasa = c(1500, 180, 4, 2.2)
+  )
+  ciclo_alterado <- "Sobrepesca de peces zooplanctívoros (Nivel de Carnívoro 1)"
+  valor_nutriente <- 2.6 # mg/L, normal
+}
+
+```
+
+**El ecosistema asignado a su grupo es el Escenario `r escenario`. La principal alteración detectada es: `r ciclo_alterado`.**
+
+## Fase 1: Análisis Individual
+
+Realice los siguientes pasos de forma individual. Anote sus respuestas a las preguntas en la sección "Hallazgos Individuales" al final de este documento.
+
+### 1. Visualizando la Estructura Trófica
+
+Un primer paso es visualizar cómo se distribuye la biomasa en los diferentes niveles tróficos. Ejecute el siguiente código para generar una **pirámide de biomasa**.
+
+```{r grafico_biomasa}
+# Generamos la PIRÁMIDE DE BIOMASA verdadera
+# Los productores en la base, carnívoros en la cima
+
+# Necesitamos crear una variable para el ancho simétrico de la pirámide
+# Vamos a graficar la biomasa en el eje X, pero dividiéndola en dos mitades
+# para que parezca una pirámide de lado
+
+# Duplicamos los datos pero con biomasa negativa para el lado izquierdo
+datos_piramide <- datos_biomasa %>%
+  mutate(Biomasa_pos = Biomasa / 2,  # Mitad derecha
+         Biomasa_neg = -Biomasa / 2) # Mitad izquierda
+
+# Convertimos a formato largo para ggplot
+datos_largos <- datos_piramide %>%
+  tidyr::pivot_longer(cols = c(Biomasa_pos, Biomasa_neg),
+                      names_to = "Lado",
+                      values_to = "Valor")
+
+# Creamos la pirámide
+ggplot(datos_largos, aes(x = Valor, y = Nivel_Trófico, fill = Nivel_Trófico)) +
+  geom_col(orientation = "y", width = 0.8) +
+  scale_fill_viridis_d() +
+  scale_x_continuous(labels = abs) + # Mostramos valores absolutos en el eje
+  labs(title = "Pirámide de Biomasa del Ecosistema",
+       subtitle = paste("Escenario", escenario, "-", ciclo_alterado),
+       x = "Biomasa (g/m²)",
+       y = "Nivel Trófico") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor = element_blank()) +
+  geom_vline(xintercept = 0, color = "black", linewidth = 0.5) # Línea central
+```
+
+**Preguntas para reflexionar (individual):**
+
+1.  **Observación:** Describe la forma de la pirámide. ¿Es ancha en la base (productores) y se angosta hacia la cima? ¿Observas alguna anomalía, como un nivel trófico con menos biomasa de la esperada?
+2.  **Concepto:** Recordando la **Primera y Segunda Ley de la Termodinámica** (pérdida de energía en forma de calor en cada transferencia), ¿qué forma debería tener una pirámide de biomasa en un ecosistema saludable? ¿Tu gráfico se ajusta a esa expectativa?
+3.  **Relación con la Teoría:** ¿Cómo se relaciona la **Producción Primaria Neta (PPN)** de los productores con la biomasa de los niveles superiores?
+
+### 2. Analizando la Perturbación
+
+El equipo de campo también tomó muestras de agua y suelo. Ejecute el siguiente código para ver los niveles de nitrógeno (un nutriente clave en su ciclo).
+
+```{r datos_nutriente}
+if(!is.na(valor_nutriente)){
+  nivel_normal <- 2.5 # mg/L, valor de referencia
+  datos_nutriente <- data.frame(
+    Condicion = c("Observado", "Referencia (Saludable)"),
+    Concentracion = c(valor_nutriente, nivel_normal)
+  )
+  
+  ggplot(datos_nutriente, aes(x = Condicion, y = Concentracion, fill = Condicion)) +
+    geom_bar(stat = "identity") +
+    labs(title = "Concentración de Nitrógeno (Indicador del Ciclo del N)",
+         y = "Concentración (mg/L)") +
+    theme_minimal() +
+    theme(legend.position = "none")
+  
+} else {
+  print("No se registraron datos de nutrientes para este escenario.")
+}
+```
+
+**Preguntas para reflexionar (individual):**
+
+1.  **Observación:** Compara la concentración de nutrientes en tu ecosistema con el valor de referencia. ¿Hay una diferencia significativa? ¿Hay un exceso o un defecto?
+2.  **Concepto:** ¿A qué **ciclo biogeoquímico** corresponde este análisis? (Agua, Carbono, Nitrógeno, Fósforo, etc.). Describe brevemente la importancia de este ciclo para los **productores** (autótrofos).
+
+---
+
+## Fase 2: Debate y Construcción Colaborativa 
+
+Reúnanse con su grupo. Compartan sus observaciones y respuestas individuales. Como equipo, deben responder las siguientes preguntas guía para construir su diagnóstico final. Siéntanse libres de hacerse más preguntas. Prepárense para presentar sus conclusiones al plenario.
+
+### Preguntas para el Debate Grupal:
+
+1.  **Diagnóstico Integrado:** ¿Cómo se relacionan los datos de la pirámide de biomasa con la alteración del ciclo biogeoquímico que se menciona en su escenario?
+    - *Ejemplo (Escenario 1 - Exceso de N):* ¿Un exceso de nitrógeno podría explicar una biomasa de productores inusualmente alta? ¿Qué implicaciones tiene esto para la **eficiencia** de transferencia de energía a los herbívoros?
+    - *Ejemplo (Escenario 2 - Deforestación):* ¿Cómo afecta la disminución de la biomasa de productores a la **producción primaria bruta y neta**? ¿Qué le sucede a la energía que debería fluir hacia los herbívoros?
+    - *Ejemplo (Escenario 3 - Sobrepesca):* La biomasa de carnívoros 1 es muy baja. ¿Cómo afecta esto al **nicho trófico** de los carnívoros 2? ¿Qué concepto de los estudiados (eficiencia ecológica, producción secundaria) explica la baja biomasa en el nivel superior?
+
+2.  **Argumentación Científica:** Basándose en la bibliografía de la unidad (los PDFs proporcionados), ¿qué sustento teórico respalda su diagnóstico? Mencionen al menos un concepto clave de la unidad (termodinámica, producción, ciclos, nicho/hábitat).
+
+3.  **Recomendación Final:** Como equipo consultor, ¿qué recomendación principal harían para mitigar el problema y restaurar el flujo de energía en el ecosistema?
+
+### Espacio para las Conclusiones del Grupo
+
+**Diagnóstico:**
+
+**Evidencia de R que lo sustenta (describan qué gráfico y qué valor observan):**
+
+**Concepto(s) Ecológico(s) Clave:**
+
+**Recomendación:**
+
+---
