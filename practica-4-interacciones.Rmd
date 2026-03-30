@@ -1,5 +1,5 @@
 ---
-title: "Práctica 4"
+title: "Práctica 4. Relaciones e interacciones en los ecosistemas"
 output: html_document
 date: "2026-03-30"
 ---
@@ -10,13 +10,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Ecología I
 
-## Relaciones e interacciones en los ecosistemas.
+## Relaciones e interacciones en los ecosistemas
 
 *Más allá del mutualismo: Análisis de superposición de nicho y competencia en murciélagos frugívoros*
 
 ---
 
-# 1. OBJETIVOS DE APRENDIZAJE
+# OBJETIVOS DE APRENDIZAJE
 
 Al finalizar esta práctica, serás capaz de:
 
@@ -28,13 +28,13 @@ Al finalizar esta práctica, serás capaz de:
 
 4. **Desarrollar** una postura crítica sobre la naturaleza dinámica y contextual de las interacciones ecológicas, cuestionando clasificaciones rígidas.
 
-5. **Comunicar** hallazgos científicos en formato reproducible (RMarkdown) y presentación oral, integrando análisis cuantitativos con teoría ecológica.
+5. **Comunicar** hallazgos científicos en informe y presentación oral, integrando análisis cuantitativos con teoría ecológica.
 
 ---
 
-# 2. INTRODUCCIÓN AL CASO DE ESTUDIO
+# INTRODUCCIÓN AL CASO DE ESTUDIO
 
-## 2.1 Contexto ecológico
+## Contexto ecológico
 
 Los murciélagos frugívoros del Neotrópico representan un modelo excepcional para estudiar interacciones ecológicas. Dos especies ampliamente distribuidas en bosques tropicales de América Latina son:
 
@@ -45,11 +45,11 @@ Estas especies han sido ampliamente estudiadas por su papel como dispersores de 
 
 Además, dentro de cada especie, observamos **relaciones intraespecíficas** como la territorialidad en los machos dominantes, jerarquías sociales en las colonias de descanso y cooperación en el cuidado parental.
 
-## 2.2 Pregunta central de investigación
+## Pregunta central de investigación
 
 > **¿Cómo cambia la superposición de nicho entre *Artibeus jamaicensis* y *Carollia perspicillata* en función de la disponibilidad de recursos, y qué implicaciones tiene esto para la clasificación de su interacción ecológica?**
 
-## 2.3 Hipótesis a explorar
+## Hipótesis a explorar
 
 - **H0 (nula):** La superposición de nicho es constante independientemente de la disponibilidad de recursos.
 - **H1 (alternativa):** La superposición de nicho aumenta bajo condiciones de escasez de recursos, intensificando la competencia interespecífica.
@@ -57,9 +57,9 @@ Además, dentro de cada especie, observamos **relaciones intraespecíficas** com
 
 ---
 
-# 3. MATERIALES Y RECURSOS
+# MATERIALES Y RECURSOS
 
-## 3.1 Datos del estudio
+## Datos del estudio
 
 Los datos corresponden a muestreos realizados entre enero y abril de 2024 en dos localidades de bosque tropical:
 
@@ -82,11 +82,10 @@ Los datos corresponden a muestreos realizados entre enero y abril de 2024 en dos
 | `ficus_disponible` | Disponibilidad de frutos de Ficus | kg/ha |
 | `temperatura_c` | Temperatura promedio | °C |
 
-## 3.2 Estructura del repositorio
+## Esctructura de directorios/archivos para datos y scripts
 
 ```
 ecologia_interacciones/
-├── README.md                          # Este archivo
 ├── datos/
 │   └── murcielagos_interacciones.csv  # Datos del estudio
 ├── scripts/
@@ -94,32 +93,19 @@ ecologia_interacciones/
 │   ├── 02_analisis_exploratorio.R     # Análisis exploratorio
 │   ├── 03_nicho_superposicion.R       # Cálculo de índices de nicho
 │   └── 04_simulacion_escasez.R        # Simulación de escenarios
-├── docs/
-│   └── bibliografia.bib               # Referencias bibliográficas
-└── entregables/
-    └── (tu reporte aquí)              # Carpeta para tu entrega
 ```
 
-## 3.3 Software requerido
+## Software requerido
 
 - **R** (versión 4.0 o superior)
 - **RStudio** (recomendado)
-- Paquetes necesarios (instalar antes de comenzar):
-
-```r
-# Ejecuta esto en la consola de R
-install.packages(c("tidyverse", "ggplot2", "dplyr", "tidyr", 
-                   "knitr", "rmarkdown", "kableExtra"))
-
-# Paquete opcional para análisis más avanzados
-install.packages("vegan")
-```
+- Paquetes necesarios: tidyverse, ggplot2, dplyr, tidyr, knitr, rmarkdown, kableExtra
 
 ---
 
-# 4. DESARROLLO DE LA ACTIVIDAD
+# DESARROLLO DE LA ACTIVIDAD
 
-## 4.1 FASE 1: Preparación 
+## FASE 1: Preparación 
 
 ### 📚 Lectura y fundamentación
 
@@ -151,244 +137,135 @@ Elabora **3 preguntas** sobre la ambigüedad de las interacciones ecológicas, b
 
 ---
 
-## 5. FASE 2: Desarrollo 
+## FASE 2: Desarrollo 
 
 ### 🔧 Configuración inicial
 
-1. **Clona el repositorio en tu computadora:**
+1. **Clona el repositorio en RStudio:**
 
-```bash
-git clone [URL-del-repositorio]
-```
+Si ya tienes clonado el repositorio de prácticas de Ecología I, sólo tienes que abrirlo mediante `File>Open Project`, y buscar el proyecto `practicas`. Tan pronto lo tengas abierto, presiona el botón `Pull` de la pestaña. Con esto tendrás los archivos que necesitarás para esta práctica.
 
-2. **Abre RStudio y establece el directorio de trabajo:**
+Si aún no tienes clonado el repo de prácticas En RStudio, ve al menú `File>New Project>Version Control>Git` y pega la URL del repositorio de prácticas que obtienes desde el botón verde `Code` (https://github.com/ecologia1-master/practicas.git). Esto creará una carpeta con el nombre del repositorio en la carpeta de trabajo (normalmente "`~`", que es la ruta `Home` en tu cuenta de RStudio Server), con todos los archivos necesarios para esta práctica.
 
-```r
-setwd("ruta/del/repositorio/ecologia_interacciones")
-```
+2. **Carga los datos y verifica que todo funciona:**
 
-3. **Carga los datos y verifica que todo funciona:**
+Ejecuta los scripts que se encuentran `ecologia_interacciones/scripts` (abajo tienes ejemplos de cómo ejecutarlos con la función `source`). Cada uno producirá resultados que se imprimirán en la consola, y se generarán gráficos que quedarán en la carpeta `ecologia_interacciones/figuras`. Asimismo, la carpeta `ecologia_interacciones/resultados` contendrá archivos de texto con resultados en formato R (archivos `.rds`), e.g. `data.frame` que contendrán índices de superposición, tablas de abundancia, etc. Los scripts de R necesitarán de estos archivos en la medida que los análisis vayan avanzando.
 
-```r
-library(tidyverse)
-datos <- read.csv("datos/murcielagos_interacciones.csv")
-head(datos)
-```
 
 ### 📊 Actividades prácticas
 
-#### Actividad 5.1: Análisis exploratorio 
+#### Actividad 1: Análisis exploratorio 
 
-Ejecuta el script `scripts/01_cargar_datos.R` y responde:
 
-```r
+Ejecuta el script `ecologia_interacciones/scripts/01_cargar_datos.R` para cargar los datos y realizar un análisis exploratorio básico de la abundancia de cada especie en función del tipo de vegetación.
+
+```{r, eval=F}
 # Código base para comenzar
-library(tidyverse)
-datos <- read.csv("datos/murcielagos_interacciones.csv")
-
-# Calcula estadísticas básicas
-datos %>%
-  group_by(especie) %>%
-  summarise(
-    abundancia_media = mean(abundancia),
-    abundancia_sd = sd(abundancia),
-    n_muestreos = n()
-  )
-
-# ¿Qué observas? ¿Hay diferencias en abundancia entre especies?
+source('ecologia_interacciones/scripts/01_cargar_datos.R')
 ```
 
-**Preguntas para discutir en pareja:**
+**Preguntas para discutir:**
+
 - ¿En qué tipo de vegetación es más abundante cada especie?
 - ¿Qué relación intraespecífica podría explicar estos patrones?
 
-#### Actividad 5.2: Visualización de patrones de distribución 
+#### Actividad 2: Visualización de patrones de distribución 
 
-```r
-# Gráfico 1: Abundancia por tipo de vegetación
-ggplot(datos, aes(x = tipo_vegetacion, y = abundancia, fill = especie)) +
-  geom_boxplot() +
-  labs(title = "Abundancia de murciélagos por tipo de vegetación",
-       x = "Tipo de vegetación",
-       y = "Abundancia (individuos)",
-       fill = "Especie") +
-  theme_minimal() +
-  scale_fill_manual(values = c("Artibeus_jamaicensis" = "#2c7bb6", 
-                               "Carollia_perspicillata" = "#d7191c"))
+El script `ecologia_interacciones/scripts/02_analisis_exploratorio.R` contiene código para visualizar la distribución de abundancia por especie y tipo de vegetación. Ejecuta el script y analiza:
 
-# Gráfico 2: Dinámica temporal
-datos_mensual <- datos %>%
-  mutate(mes = format(as.Date(fecha), "%m")) %>%
-  group_by(mes, especie) %>%
-  summarise(abundancia_total = sum(abundancia), .groups = "drop")
-
-ggplot(datos_mensual, aes(x = mes, y = abundancia_total, 
-                          color = especie, group = especie)) +
-  geom_line(size = 1.2) +
-  geom_point(size = 3) +
-  labs(title = "Dinámica temporal de abundancia",
-       x = "Mes",
-       y = "Abundancia total",
-       color = "Especie") +
-  theme_minimal()
+```{r, eval=F}
+source('ecologia_interacciones/scripts/02_analisis_exploratorio.R')
 ```
 
-#### Actividad 5.3: Análisis de nicho trófico
+#### Actividad 3: Análisis de nicho trófico
 
-```r
-# Gráfico 3: Relación con disponibilidad de frutos
-datos_dieta <- datos %>%
-  pivot_longer(cols = c(piper_disponible, ficus_disponible),
-               names_to = "tipo_fruto",
-               values_to = "disponibilidad") %>%
-  mutate(tipo_fruto = ifelse(tipo_fruto == "piper_disponible", "Piper", "Ficus"))
+Ejecuta el script `ecologia_interacciones/scripts/03_nicho_superposicion.R` para visualizar la disponibilidad de recursos (frutos de Piper y Ficus) y su relación con la abundancia de cada especie.
 
-ggplot(datos_dieta, aes(x = disponibilidad, y = abundancia, 
-                        color = especie, shape = tipo_fruto)) +
-  geom_point(size = 3, alpha = 0.7) +
-  geom_smooth(method = "lm", se = FALSE, linetype = "dashed") +
-  labs(title = "Respuesta de abundancia a disponibilidad de frutos",
-       x = "Disponibilidad de frutos (kg/ha)",
-       y = "Abundancia de murciélagos",
-       color = "Especie",
-       shape = "Tipo de fruto") +
-  theme_minimal() +
-  facet_wrap(~especie)
+```{r, eval=F}
+source('ecologia_interacciones/scripts/03_nicho_superposicion.R')
 ```
 
-#### Actividad 5.4: Cálculo del índice de superposición de Pianka
 
-```r
-# Calcular proporciones de uso de recursos
-uso_recursos <- datos %>%
-  group_by(especie) %>%
-  summarise(
-    uso_piper = sum(abundancia * piper_disponible / 
-                     (piper_disponible + ficus_disponible + 0.001)),
-    uso_ficus = sum(abundancia * ficus_disponible / 
-                     (piper_disponible + ficus_disponible + 0.001)),
-    .groups = "drop"
-  ) %>%
-  mutate(
-    total = uso_piper + uso_ficus,
-    prop_piper = uso_piper / total,
-    prop_ficus = uso_ficus / total
-  )
+#### Actividad 4: Cálculo del índice de superposición de Pianka
 
-# Índice de Pianka
-p_artibeus <- c(uso_recursos$prop_piper[1], uso_recursos$prop_ficus[1])
-p_carollia <- c(uso_recursos$prop_piper[2], uso_recursos$prop_ficus[2])
+Ejecuta el script `ecologia_interacciones/scripts/03_nicho_superposicion.R` para calcular el índice de superposición de Pianka entre las dos especies.
 
-numerador <- sum(p_artibeus * p_carollia)
-denominador <- sqrt(sum(p_artibeus^2) * sum(p_carollia^2))
-indice_pianka <- numerador / denominador
-
-print(paste("Índice de superposición de Pianka:", round(indice_pianka, 3)))
+```{r, eval=F}
+source('ecologia_interacciones/scripts/03_nicho_superposicion.R')
 ```
 
 **Interpretación:**
+
 - 0 = sin superposición (nichos completamente separados)
 - 1 = superposición completa (nichos idénticos)
 
-#### Actividad 5.5: Simulación de escasez y debate
+#### Actividad 5: Simulación de escasez y debate
 
-```r
-# Simular reducción del 50% en disponibilidad de frutos (sequía)
-datos_simulados <- datos %>%
-  mutate(
-    piper_disponible_seq = piper_disponible * 0.5,
-    ficus_disponible_seq = ficus_disponible * 0.5
-  )
+Ejecuta el script `ecologia_interacciones/scripts/04_simulacion_escasez.R` para simular un escenario de escasez de recursos (reducción del 50% en la disponibilidad de frutos) y recalcula el índice de superposición.
 
-# Recalcular el índice con el nuevo escenario
-# (Código similar al anterior pero con datos_simulados)
-
-# Visualizar cambio en el nicho
-nicho_df <- data.frame(
-  especie = rep(c("Artibeus", "Carollia"), each = 2),
-  recurso = rep(c("Piper", "Ficus"), 2),
-  proporcion = c(p_artibeus[1], p_artibeus[2], 
-                 p_carollia[1], p_carollia[2]),
-  escenario = "Normal"
-)
-
-# Comparar con el escenario de escasez...
+```{r, eval=F}
+source('ecologia_interacciones/scripts/04_simulacion_escasez.R')
 ```
 
 **Preguntas para debate:**
+
 1. ¿Cómo cambia el índice de superposición bajo el escenario de escasez?
 2. ¿Qué tipo de interacción interespecífica predomina en cada escenario?
 3. ¿Qué evidencias de competencia intraespecífica observas en los datos?
 
 ---
 
-## 6. FASE 3: Consolidación 
+## FASE 3: Consolidación 
 
 
-### 📝 Tarea 3.1: Elaboración del reporte en RMarkdown
+### 📝 Tarea 1: Elaboración del informe
 
-Debes crear un **único archivo RMarkdown (`.Rmd`)** que contenga:
+Debes crear un **único archivo de informe** que contenga:
 
 1. **Todo el análisis reproducible** (código + narrativa)
 2. **Interpretación ecológica** de los resultados
 3. **Respuesta a las preguntas de reflexión**
 
-#### Estructura del reporte
+#### Estructura del informe
 
-```markdown
----
-title: "Análisis de interacciones ecológicas en murciélagos frugívoros"
-author: "Apellido1 Nombre1 & Apellido2 Nombre2"
-date: "`r Sys.Date()`"
-output:
-  html_document:
-    toc: true
-    toc_float: true
-    theme: flatly
-  pdf_document:
-    toc: true
-bibliography: docs/bibliografia.bib
----
 
-# Resumen
+- Resumen
 
 [Contexto, objetivo, métodos principales, resultados clave y conclusión. Máx. 250 palabras]
 
-# Introducción
+- Introducción
 
-## Marco teórico
-- Relaciones intraespecíficas
-- Relaciones interespecíficas
-- Nicho ecológico vs. hábitat
+  - Relaciones intraespecíficas
+  - Relaciones interespecíficas
+  - Nicho ecológico vs. hábitat
 
-## Justificación y objetivos
+- Justificación y objetivos
 
-# Materiales y métodos
+- Materiales y métodos
 
-## Área de estudio
-## Especies de estudio
-## Muestreo y variables
-## Análisis de datos (con código R)
+  - Área de estudio
+  - Especies de estudio
+  - Muestreo y variables
+  - Análisis de datos (con código R)
 
-# Resultados
+- Resultados
 
-## Patrones de abundancia
-## Superposición de nicho trófico
-## Simulación de escenario de escasez
+  - Patrones de abundancia
+  - Superposición de nicho trófico
+  - Simulación de escenario de escasez
 
-# Discusión
+- Discusión
 
-## Interpretación ecológica de los resultados
-## Respuesta a las preguntas de reflexión
-## Limitaciones del estudio
-## Implicaciones para la conservación
+  - Interpretación ecológica de los resultados
+  - Respuesta a las preguntas de reflexión
+  - Limitaciones del estudio
+  - Implicaciones para la conservación
 
-# Conclusiones
+- Conclusiones
 
-# Referencias
+- Referencias
 
-# Apéndice: Código completo
-```
+- Apéndice: Código completo
 
 ### 📋 Preguntas obligatorias para la discusión
 
@@ -404,7 +281,7 @@ Incluye en tu discusión respuestas fundamentadas a estas preguntas:
 
 5. **Aplicación de R:** ¿Qué ventajas y limitaciones tiene el uso de R para entender las interacciones ecológicas en comparación con un análisis puramente descriptivo?
 
-### 🎤 Tarea 3.2: Preparación de la presentación oral
+### 🎤 Tarea 2: Preparación de la presentación oral
 
 **Duración:** 7-10 minutos 
 
@@ -424,66 +301,30 @@ Incluye en tu discusión respuestas fundamentadas a estas preguntas:
 
 ---
 
-# 6. Opcional: ENTREGA Y FORMATOS
+# ENTREGA Y FORMATOS
 
-## 6.1 Estructura de entrega en GitHub
-
-Tu repositorio debe contener la siguiente estructura:
-
-```
-tu-repositorio/
-├── README.md                          # Descripción del proyecto
-├── ecologia_interacciones.Rmd         # Reporte principal
-├── ecologia_interacciones.html        # Reporte compilado (o PDF)
-├── presentacion.pdf                   # Diapositivas de presentación
-├── datos/
-│   └── murcielagos_interacciones.csv  # (no modificar)
-├── scripts/
-│   ├── 01_cargar_datos.R
-│   ├── 02_analisis_exploratorio.R
-│   ├── 03_nicho_superposicion.R
-│   └── 04_simulacion_escasez.R
-└── docs/
-    └── bibliografia.bib
-```
-
-## 6.2 Instrucciones para subir tu trabajo
-
-```bash
-# 1. Clona tu repositorio
-git clone [URL-de-tu-repositorio]
-
-# 2. Copia tus archivos a la carpeta
-cp tu-reporte.Rmd ecologia_interacciones/
-cp tu-presentacion.pdf ecologia_interacciones/
-
-# 3. Agrega, commitea y pushea
-cd ecologia_interacciones
-git add .
-git commit -m "Entrega final práctica interacciones ecológicas"
-git push origin main
-```
+Ejecuta los scripts y entrega tu informe como de costumbre.
 
 ---
 
-# 7. RÚBRICA DE EVALUACIÓN
+# RÚBRICA DE EVALUACIÓN
 
 | Criterio | Excelente (90-100%) | Bueno (75-89%) | Aceptable (60-74%) | Insuficiente (<60%) | Ponderación |
 |:---|:---|:---|:---|:---|:---|
 | **Dominio conceptual** | Aplica correcta y sutilmente todos los términos (intraespecíficas, interespecíficas, nicho, hábitat). Discute la gradación entre interacciones y contexto-dependencia. | Aplica la mayoría de los términos correctamente, aunque con alguna simplificación. | Aplica los términos de manera básica o con algunos errores de clasificación. | No logra aplicar los conceptos al caso de estudio. | 20% |
-| **Uso e interpretación de R** | Código reproducible, bien comentado. Gráficas profesionales, claras. Interpretación correcta y profunda (mecanismos ecológicos). Reproducibilidad total en RMarkdown. | Código funcional. Gráficas adecuadas. Interpretación correcta pero descriptiva. | Código con errores. Gráficas básicas. Interpretación superficial. | No se entregó código funcional o gráficas irrelevantes. | 25% |
+| **Uso e interpretación de R** | Código reproducible de los scripts debidamente ejecutado. Gráficas profesionales, claras. Interpretación correcta y profunda (mecanismos ecológicos). | Código funcional. Gráficas adecuadas. Interpretación correcta pero descriptiva. | Código con errores. Gráficas básicas. Interpretación superficial. | No se entregó código funcional o gráficas irrelevantes. | 25% |
 | **Pensamiento crítico** | Discute activamente la ambigüedad de las interacciones. Cuestiona clasificaciones rígidas. Propone explicaciones alternativas basadas en datos. | Menciona la complejidad de las interacciones, pero no profundiza. | Presenta interacciones como categorías estáticas sin matices. | No hay evidencia de análisis crítico. | 20% |
-| **Comunicación escrita (RMarkdown)** | Estructura clara. Figuras con leyendas auto-explicativas. Discusión integra resultados con teoría. Código reproducible. Sin errores. | Estructura adecuada. Figuras correctas. Discusión vincula resultados con teoría. | Estructura confusa. Figuras mal referenciadas. Discusión que repite resultados. | Reporte desordenado. No hay discusión. | 15% |
+| **Comunicación escrita** | Estructura clara. Figuras con leyendas auto-explicativas. Discusión integra resultados con teoría. Código reproducible. Sin errores. | Estructura adecuada. Figuras correctas. Discusión vincula resultados con teoría. | Estructura confusa. Figuras mal referenciadas. Discusión que repite resultados. | Reporte desordenado. No hay discusión. | 15% |
 | **Comunicación oral** | 10 min exactos. Claridad absoluta. Uso efectivo de figuras. Responde preguntas con solidez. | Cumple el tiempo. Buena claridad. Responde adecuadamente. | No cumple tiempo. Poca claridad. Figuras no se explican bien. | Mala preparación. No hay coherencia. | 10% |
 | **Trabajo colaborativo** | Evidencia integración perfecta. Roles intercambiados. Ambos participan equitativamente. | Se nota colaboración, aunque predominó un rol. | Trabajo en paralelo más que colaborativo. | No hay evidencia de colaboración efectiva. | 10% |
 
 ---
 
-# 8. CRITERIOS DE ÉXITO Y RECOMENDACIONES
+# CRITERIOS DE ÉXITO Y RECOMENDACIONES
 
 ## ✅ Para obtener la máxima calificación
 
-- [ ] **Reproducibilidad:** Tu RMarkdown debe compilar sin errores y generar exactamente los resultados que reportas.
+- [ ] **Reproducibilidad:** Tus scripts deben correr sin errores y generar exactamente los resultados que reportas.
 - [ ] **Profundidad conceptual:** No te limites a definir términos; aplícalos críticamente al caso.
 - [ ] **Creatividad en la discusión:** Propón mecanismos ecológicos alternativos que expliquen los patrones observados.
 - [ ] **Colaboración:** Ambos integrantes deben presentar y dominar tanto el análisis como la teoría.
@@ -491,19 +332,17 @@ git push origin main
 
 ## 💡 Recomendaciones adicionales
 
-1. **Usa Quarto en lugar de RMarkdown** si ya lo conoces; ofrece mejores opciones de formato.
+1. **Incluye referencias**.
 
-2. **Incluye referencias** en formato BibTeX usando el archivo `bibliografia.bib`.
+2. **Practica la presentación** con cronómetro. 10 minutos son menos de lo que parece.
 
-3. **Practica la presentación** con cronómetro. 10 minutos son menos de lo que parece.
+3. **Explora paquetes adicionales** como `ggpubr` para gráficos más profesionales o `patchwork` para combinar múltiples figuras.
 
-4. **Explora paquetes adicionales** como `ggpubr` para gráficos más profesionales o `patchwork` para combinar múltiples figuras.
-
-5. **Documenta tu código** con comentarios en español o inglés, pero sé consistente.
+4. **Documenta tu código** con comentarios en español o inglés, pero sé consistente.
 
 ---
 
-# 9. RECURSOS ADICIONALES
+# RECURSOS ADICIONALES
 
 ## 📖 Lecturas complementarias
 
