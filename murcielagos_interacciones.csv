@@ -1,0 +1,17 @@
+fecha,localidad,especie,abundancia,tipo_vegetacion,altitud_m,precipitacion_mm,frutos_disponibles_kg_ha,piper_disponible,ficus_disponible,temperatura_c
+2024-01-15,Quebrada_Verde,Artibeus_jamaicensis,12,dosel_cerrado,450,125,45,12,85,24.5
+2024-01-15,Quebrada_Verde,Carollia_perspicillata,3,dosel_cerrado,450,125,45,12,85,24.5
+2024-01-15,Laguna_Azul,Artibeus_jamaicensis,8,borde_bosque,380,110,38,8,62,25.1
+2024-01-15,Laguna_Azul,Carollia_perspicillata,15,borde_bosque,380,110,38,8,62,25.1
+2024-02-10,Quebrada_Verde,Artibeus_jamaicensis,18,dosel_cerrado,450,95,32,5,58,24.8
+2024-02-10,Quebrada_Verde,Carollia_perspicillata,5,dosel_cerrado,450,95,32,5,58,24.8
+2024-02-10,Laguna_Azul,Artibeus_jamaicensis,6,borde_bosque,380,90,28,18,35,25.3
+2024-02-10,Laguna_Azul,Carollia_perspicillata,22,borde_bosque,380,90,28,18,35,25.3
+2024-03-05,Quebrada_Verde,Artibeus_jamaicensis,9,dosel_cerrado,450,78,25,3,42,25.0
+2024-03-05,Quebrada_Verde,Carollia_perspicillata,11,dosel_cerrado,450,78,25,3,42,25.0
+2024-03-05,Laguna_Azul,Artibeus_jamaicensis,4,borde_bosque,380,72,22,25,18,25.6
+2024-03-05,Laguna_Azul,Carollia_perspicillata,28,borde_bosque,380,72,22,25,18,25.6
+2024-04-12,Quebrada_Verde,Artibeus_jamaicensis,15,dosel_cerrado,450,62,18,2,28,24.9
+2024-04-12,Quebrada_Verde,Carollia_perspicillata,14,dosel_cerrado,450,62,18,2,28,24.9
+2024-04-12,Laguna_Azul,Artibeus_jamaicensis,3,borde_bosque,380,58,15,32,12,25.4
+2024-04-12,Laguna_Azul,Carollia_perspicillata,31,borde_bosque,380,58,15,32,12,25.4

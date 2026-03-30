@@ -1,0 +1,530 @@
+---
+title: "Práctica 4"
+output: html_document
+date: "2026-03-30"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Ecología I
+
+## Relaciones e interacciones en los ecosistemas.
+
+*Más allá del mutualismo: Análisis de superposición de nicho y competencia en murciélagos frugívoros*
+
+---
+
+# 1. OBJETIVOS DE APRENDIZAJE
+
+Al finalizar esta práctica, serás capaz de:
+
+1. **Aplicar** los conceptos de relaciones intraespecíficas (competencia, territorialidad, jerarquía social) e interespecíficas (competencia, mutualismo, depredación, parasitismo) a un caso de estudio real con datos de campo.
+
+2. **Diferenciar** entre hábitat y nicho ecológico mediante análisis cuantitativos en R.
+
+3. **Utilizar** R para visualizar patrones de distribución, calcular índices de superposición de nicho y simular escenarios de cambio ambiental.
+
+4. **Desarrollar** una postura crítica sobre la naturaleza dinámica y contextual de las interacciones ecológicas, cuestionando clasificaciones rígidas.
+
+5. **Comunicar** hallazgos científicos en formato reproducible (RMarkdown) y presentación oral, integrando análisis cuantitativos con teoría ecológica.
+
+---
+
+# 2. INTRODUCCIÓN AL CASO DE ESTUDIO
+
+## 2.1 Contexto ecológico
+
+Los murciélagos frugívoros del Neotrópico representan un modelo excepcional para estudiar interacciones ecológicas. Dos especies ampliamente distribuidas en bosques tropicales de América Latina son:
+
+- ***Artibeus jamaicensis*** (murciélago frugívoro jamaicano)
+- ***Carollia perspicillata*** (murciélago de cola corta)
+
+Estas especies han sido ampliamente estudiadas por su papel como dispersores de semillas y por mostrar una **partición de nicho trófico**: *Carollia* se especializa en frutos del género *Piper*, mientras que *Artibeus* prefiere frutos de *Ficus* y otras especies de dosel. Sin embargo, durante épocas de escasez de frutos, sus dietas pueden superponerse, generando **competencia interespecífica** por recursos limitados.
+
+Además, dentro de cada especie, observamos **relaciones intraespecíficas** como la territorialidad en los machos dominantes, jerarquías sociales en las colonias de descanso y cooperación en el cuidado parental.
+
+## 2.2 Pregunta central de investigación
+
+> **¿Cómo cambia la superposición de nicho entre *Artibeus jamaicensis* y *Carollia perspicillata* en función de la disponibilidad de recursos, y qué implicaciones tiene esto para la clasificación de su interacción ecológica?**
+
+## 2.3 Hipótesis a explorar
+
+- **H0 (nula):** La superposición de nicho es constante independientemente de la disponibilidad de recursos.
+- **H1 (alternativa):** La superposición de nicho aumenta bajo condiciones de escasez de recursos, intensificando la competencia interespecífica.
+- **H2 (alternativa):** Existe partición de nicho en condiciones de abundancia, permitiendo la coexistencia sin competencia intensa.
+
+---
+
+# 3. MATERIALES Y RECURSOS
+
+## 3.1 Datos del estudio
+
+Los datos corresponden a muestreos realizados entre enero y abril de 2024 en dos localidades de bosque tropical:
+
+- **Quebrada Verde:** Zona de dosel cerrado
+- **Laguna Azul:** Zona de borde de bosque
+
+**Variables incluidas:**
+
+| Variable | Descripción | Unidad/Tipo |
+|:---|:---|:---|
+| `fecha` | Fecha de muestreo | YYYY-MM-DD |
+| `localidad` | Sitio de muestreo | Quebrada_Verde / Laguna_Azul |
+| `especie` | Especie de murciélago | Artibeus_jamaicensis / Carollia_perspicillata |
+| `abundancia` | Número de individuos capturados | Entero |
+| `tipo_vegetacion` | Tipo de cobertura vegetal | dosel_cerrado / borde_bosque |
+| `altitud_m` | Altitud sobre nivel del mar | Metros |
+| `precipitacion_mm` | Precipitación mensual | mm |
+| `frutos_disponibles_kg_ha` | Disponibilidad total de frutos | kg/ha |
+| `piper_disponible` | Disponibilidad de frutos de Piper | kg/ha |
+| `ficus_disponible` | Disponibilidad de frutos de Ficus | kg/ha |
+| `temperatura_c` | Temperatura promedio | °C |
+
+## 3.2 Estructura del repositorio
+
+```
+ecologia_interacciones/
+├── README.md                          # Este archivo
+├── datos/
+│   └── murcielagos_interacciones.csv  # Datos del estudio
+├── scripts/
+│   ├── 01_cargar_datos.R              # Script para cargar datos
+│   ├── 02_analisis_exploratorio.R     # Análisis exploratorio
+│   ├── 03_nicho_superposicion.R       # Cálculo de índices de nicho
+│   └── 04_simulacion_escasez.R        # Simulación de escenarios
+├── docs/
+│   └── bibliografia.bib               # Referencias bibliográficas
+└── entregables/
+    └── (tu reporte aquí)              # Carpeta para tu entrega
+```
+
+## 3.3 Software requerido
+
+- **R** (versión 4.0 o superior)
+- **RStudio** (recomendado)
+- Paquetes necesarios (instalar antes de comenzar):
+
+```r
+# Ejecuta esto en la consola de R
+install.packages(c("tidyverse", "ggplot2", "dplyr", "tidyr", 
+                   "knitr", "rmarkdown", "kableExtra"))
+
+# Paquete opcional para análisis más avanzados
+install.packages("vegan")
+```
+
+---
+
+# 4. DESARROLLO DE LA ACTIVIDAD
+
+## 4.1 FASE 1: Preparación 
+
+### 📚 Lectura y fundamentación
+
+1. **Lee la quinta parte del libro de texto** sobre interacciones ecológicas en el libro de texto de la asignatura. Concéntrate en:
+   - Definiciones de relaciones intraespecíficas (competencia, territorialidad, jerarquía social, cooperación, dispersión)
+   - Definiciones de relaciones interespecíficas (mutualismo, simbiosis, comensalismo, competencia, depredación, parasitismo, amensalismo)
+   - Conceptos de nicho ecológico vs. hábitat
+
+2. **Lee el artículo científico:**
+
+   - Lopez, J. E., & Vaughan, C. (2007). Food niche overlap among neotropical frugivorous bats in Costa Rica. *Revista de Biología Tropical*, 55(1), 301-313.
+   - **Enlace:** https://www.scielo.sa.cr/scielo.php?script=sci_arttext&pid=S0034-77442007000100032
+   
+   - Complementario: Delaval, M., Henry, M., & Charles-Dominique, P. (2005). Interspecific competition and niche partitioning: Example of a neotropical rainforest bat community. Revue d'Écologie (La Terre et La Vie), 60(2), 149-165.
+   - **Enlace:** https://www.researchgate.net/publication/278622020_Interspecific_competition_and_niche_partitioning_Example_of_a_Neotropical_rainforest_bat_community
+
+   Presta especial atención a:
+   - Metodología de muestreo de dieta
+   - Cálculo de índices de superposición de nicho
+   - Discusión sobre competencia vs. partición de nicho
+
+### ❓ Elaboración de preguntas críticas
+
+Elabora **3 preguntas** sobre la ambigüedad de las interacciones ecológicas, basadas en las lecturas. Ejemplos:
+
+- *"¿Una relación mutualista puede volverse parasítica bajo estrés ambiental? ¿Cómo lo evidenciaríamos con datos?"*
+- *"¿Cómo distinguimos competencia por interferencia de competencia por explotación en datos de abundancia?"*
+- *"¿Qué papel juega la territorialidad intraespecífica en la estructuración de la comunidad?"*
+
+---
+
+## 5. FASE 2: Desarrollo 
+
+### 🔧 Configuración inicial
+
+1. **Clona el repositorio en tu computadora:**
+
+```bash
+git clone [URL-del-repositorio]
+```
+
+2. **Abre RStudio y establece el directorio de trabajo:**
+
+```r
+setwd("ruta/del/repositorio/ecologia_interacciones")
+```
+
+3. **Carga los datos y verifica que todo funciona:**
+
+```r
+library(tidyverse)
+datos <- read.csv("datos/murcielagos_interacciones.csv")
+head(datos)
+```
+
+### 📊 Actividades prácticas
+
+#### Actividad 5.1: Análisis exploratorio 
+
+Ejecuta el script `scripts/01_cargar_datos.R` y responde:
+
+```r
+# Código base para comenzar
+library(tidyverse)
+datos <- read.csv("datos/murcielagos_interacciones.csv")
+
+# Calcula estadísticas básicas
+datos %>%
+  group_by(especie) %>%
+  summarise(
+    abundancia_media = mean(abundancia),
+    abundancia_sd = sd(abundancia),
+    n_muestreos = n()
+  )
+
+# ¿Qué observas? ¿Hay diferencias en abundancia entre especies?
+```
+
+**Preguntas para discutir en pareja:**
+- ¿En qué tipo de vegetación es más abundante cada especie?
+- ¿Qué relación intraespecífica podría explicar estos patrones?
+
+#### Actividad 5.2: Visualización de patrones de distribución 
+
+```r
+# Gráfico 1: Abundancia por tipo de vegetación
+ggplot(datos, aes(x = tipo_vegetacion, y = abundancia, fill = especie)) +
+  geom_boxplot() +
+  labs(title = "Abundancia de murciélagos por tipo de vegetación",
+       x = "Tipo de vegetación",
+       y = "Abundancia (individuos)",
+       fill = "Especie") +
+  theme_minimal() +
+  scale_fill_manual(values = c("Artibeus_jamaicensis" = "#2c7bb6", 
+                               "Carollia_perspicillata" = "#d7191c"))
+
+# Gráfico 2: Dinámica temporal
+datos_mensual <- datos %>%
+  mutate(mes = format(as.Date(fecha), "%m")) %>%
+  group_by(mes, especie) %>%
+  summarise(abundancia_total = sum(abundancia), .groups = "drop")
+
+ggplot(datos_mensual, aes(x = mes, y = abundancia_total, 
+                          color = especie, group = especie)) +
+  geom_line(size = 1.2) +
+  geom_point(size = 3) +
+  labs(title = "Dinámica temporal de abundancia",
+       x = "Mes",
+       y = "Abundancia total",
+       color = "Especie") +
+  theme_minimal()
+```
+
+#### Actividad 5.3: Análisis de nicho trófico
+
+```r
+# Gráfico 3: Relación con disponibilidad de frutos
+datos_dieta <- datos %>%
+  pivot_longer(cols = c(piper_disponible, ficus_disponible),
+               names_to = "tipo_fruto",
+               values_to = "disponibilidad") %>%
+  mutate(tipo_fruto = ifelse(tipo_fruto == "piper_disponible", "Piper", "Ficus"))
+
+ggplot(datos_dieta, aes(x = disponibilidad, y = abundancia, 
+                        color = especie, shape = tipo_fruto)) +
+  geom_point(size = 3, alpha = 0.7) +
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed") +
+  labs(title = "Respuesta de abundancia a disponibilidad de frutos",
+       x = "Disponibilidad de frutos (kg/ha)",
+       y = "Abundancia de murciélagos",
+       color = "Especie",
+       shape = "Tipo de fruto") +
+  theme_minimal() +
+  facet_wrap(~especie)
+```
+
+#### Actividad 5.4: Cálculo del índice de superposición de Pianka
+
+```r
+# Calcular proporciones de uso de recursos
+uso_recursos <- datos %>%
+  group_by(especie) %>%
+  summarise(
+    uso_piper = sum(abundancia * piper_disponible / 
+                     (piper_disponible + ficus_disponible + 0.001)),
+    uso_ficus = sum(abundancia * ficus_disponible / 
+                     (piper_disponible + ficus_disponible + 0.001)),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    total = uso_piper + uso_ficus,
+    prop_piper = uso_piper / total,
+    prop_ficus = uso_ficus / total
+  )
+
+# Índice de Pianka
+p_artibeus <- c(uso_recursos$prop_piper[1], uso_recursos$prop_ficus[1])
+p_carollia <- c(uso_recursos$prop_piper[2], uso_recursos$prop_ficus[2])
+
+numerador <- sum(p_artibeus * p_carollia)
+denominador <- sqrt(sum(p_artibeus^2) * sum(p_carollia^2))
+indice_pianka <- numerador / denominador
+
+print(paste("Índice de superposición de Pianka:", round(indice_pianka, 3)))
+```
+
+**Interpretación:**
+- 0 = sin superposición (nichos completamente separados)
+- 1 = superposición completa (nichos idénticos)
+
+#### Actividad 5.5: Simulación de escasez y debate
+
+```r
+# Simular reducción del 50% en disponibilidad de frutos (sequía)
+datos_simulados <- datos %>%
+  mutate(
+    piper_disponible_seq = piper_disponible * 0.5,
+    ficus_disponible_seq = ficus_disponible * 0.5
+  )
+
+# Recalcular el índice con el nuevo escenario
+# (Código similar al anterior pero con datos_simulados)
+
+# Visualizar cambio en el nicho
+nicho_df <- data.frame(
+  especie = rep(c("Artibeus", "Carollia"), each = 2),
+  recurso = rep(c("Piper", "Ficus"), 2),
+  proporcion = c(p_artibeus[1], p_artibeus[2], 
+                 p_carollia[1], p_carollia[2]),
+  escenario = "Normal"
+)
+
+# Comparar con el escenario de escasez...
+```
+
+**Preguntas para debate:**
+1. ¿Cómo cambia el índice de superposición bajo el escenario de escasez?
+2. ¿Qué tipo de interacción interespecífica predomina en cada escenario?
+3. ¿Qué evidencias de competencia intraespecífica observas en los datos?
+
+---
+
+## 6. FASE 3: Consolidación 
+
+
+### 📝 Tarea 3.1: Elaboración del reporte en RMarkdown
+
+Debes crear un **único archivo RMarkdown (`.Rmd`)** que contenga:
+
+1. **Todo el análisis reproducible** (código + narrativa)
+2. **Interpretación ecológica** de los resultados
+3. **Respuesta a las preguntas de reflexión**
+
+#### Estructura del reporte
+
+```markdown
+---
+title: "Análisis de interacciones ecológicas en murciélagos frugívoros"
+author: "Apellido1 Nombre1 & Apellido2 Nombre2"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+  pdf_document:
+    toc: true
+bibliography: docs/bibliografia.bib
+---
+
+# Resumen
+
+[Contexto, objetivo, métodos principales, resultados clave y conclusión. Máx. 250 palabras]
+
+# Introducción
+
+## Marco teórico
+- Relaciones intraespecíficas
+- Relaciones interespecíficas
+- Nicho ecológico vs. hábitat
+
+## Justificación y objetivos
+
+# Materiales y métodos
+
+## Área de estudio
+## Especies de estudio
+## Muestreo y variables
+## Análisis de datos (con código R)
+
+# Resultados
+
+## Patrones de abundancia
+## Superposición de nicho trófico
+## Simulación de escenario de escasez
+
+# Discusión
+
+## Interpretación ecológica de los resultados
+## Respuesta a las preguntas de reflexión
+## Limitaciones del estudio
+## Implicaciones para la conservación
+
+# Conclusiones
+
+# Referencias
+
+# Apéndice: Código completo
+```
+
+### 📋 Preguntas obligatorias para la discusión
+
+Incluye en tu discusión respuestas fundamentadas a estas preguntas:
+
+1. **Contexto-dependencia:** ¿Cómo cambia el índice de superposición de Pianka entre el escenario normal y el de escasez? ¿Qué implica esto para la clasificación de la interacción (competencia vs. coexistencia)?
+
+2. **Intra vs. interespecífico:** ¿Qué evidencias de competencia intraespecífica (territorialidad, jerarquía social) podrían explicar los patrones de distribución observados entre dosel y borde de bosque?
+
+3. **Mutualismo o parasitismo:** ¿Puede considerarse que existe una relación mutualista entre los murciélagos y las plantas que consumen? ¿Bajo qué condiciones esta relación podría volverse parasítica para las plantas?
+
+4. **Nicho y hábitat:** ¿Cómo diferencias, con los datos disponibles, entre el hábitat y el nicho ecológico de cada especie? ¿Qué variables usarías para describir cada concepto?
+
+5. **Aplicación de R:** ¿Qué ventajas y limitaciones tiene el uso de R para entender las interacciones ecológicas en comparación con un análisis puramente descriptivo?
+
+### 🎤 Tarea 3.2: Preparación de la presentación oral
+
+**Duración:** 7-10 minutos 
+
+**Estructura sugerida:**
+
+| Diapositiva | Contenido | Tiempo |
+|:---|:---|:---|
+| 1 | Título, autores, roles | 0:30 |
+| 2 | Contexto y pregunta de investigación | 1:30 |
+| 3 | Metodología (énfasis en uso de R) | 1:30 |
+| 4 | Resultados - Figura 1 (abundancia) | 1:30 |
+| 5 | Resultados - Figura 2 (nicho) | 1:30 |
+| 6 | Resultados - Escenario de escasez | 1:30 |
+| 7 | Discusión y respuesta a pregunta central | 1:30 |
+| 8 | Conclusiones y reflexión crítica | 0:30 |
+| 9 | Referencias | 0:00 |
+
+---
+
+# 6. Opcional: ENTREGA Y FORMATOS
+
+## 6.1 Estructura de entrega en GitHub
+
+Tu repositorio debe contener la siguiente estructura:
+
+```
+tu-repositorio/
+├── README.md                          # Descripción del proyecto
+├── ecologia_interacciones.Rmd         # Reporte principal
+├── ecologia_interacciones.html        # Reporte compilado (o PDF)
+├── presentacion.pdf                   # Diapositivas de presentación
+├── datos/
+│   └── murcielagos_interacciones.csv  # (no modificar)
+├── scripts/
+│   ├── 01_cargar_datos.R
+│   ├── 02_analisis_exploratorio.R
+│   ├── 03_nicho_superposicion.R
+│   └── 04_simulacion_escasez.R
+└── docs/
+    └── bibliografia.bib
+```
+
+## 6.2 Instrucciones para subir tu trabajo
+
+```bash
+# 1. Clona tu repositorio
+git clone [URL-de-tu-repositorio]
+
+# 2. Copia tus archivos a la carpeta
+cp tu-reporte.Rmd ecologia_interacciones/
+cp tu-presentacion.pdf ecologia_interacciones/
+
+# 3. Agrega, commitea y pushea
+cd ecologia_interacciones
+git add .
+git commit -m "Entrega final práctica interacciones ecológicas"
+git push origin main
+```
+
+---
+
+# 7. RÚBRICA DE EVALUACIÓN
+
+| Criterio | Excelente (90-100%) | Bueno (75-89%) | Aceptable (60-74%) | Insuficiente (<60%) | Ponderación |
+|:---|:---|:---|:---|:---|:---|
+| **Dominio conceptual** | Aplica correcta y sutilmente todos los términos (intraespecíficas, interespecíficas, nicho, hábitat). Discute la gradación entre interacciones y contexto-dependencia. | Aplica la mayoría de los términos correctamente, aunque con alguna simplificación. | Aplica los términos de manera básica o con algunos errores de clasificación. | No logra aplicar los conceptos al caso de estudio. | 20% |
+| **Uso e interpretación de R** | Código reproducible, bien comentado. Gráficas profesionales, claras. Interpretación correcta y profunda (mecanismos ecológicos). Reproducibilidad total en RMarkdown. | Código funcional. Gráficas adecuadas. Interpretación correcta pero descriptiva. | Código con errores. Gráficas básicas. Interpretación superficial. | No se entregó código funcional o gráficas irrelevantes. | 25% |
+| **Pensamiento crítico** | Discute activamente la ambigüedad de las interacciones. Cuestiona clasificaciones rígidas. Propone explicaciones alternativas basadas en datos. | Menciona la complejidad de las interacciones, pero no profundiza. | Presenta interacciones como categorías estáticas sin matices. | No hay evidencia de análisis crítico. | 20% |
+| **Comunicación escrita (RMarkdown)** | Estructura clara. Figuras con leyendas auto-explicativas. Discusión integra resultados con teoría. Código reproducible. Sin errores. | Estructura adecuada. Figuras correctas. Discusión vincula resultados con teoría. | Estructura confusa. Figuras mal referenciadas. Discusión que repite resultados. | Reporte desordenado. No hay discusión. | 15% |
+| **Comunicación oral** | 10 min exactos. Claridad absoluta. Uso efectivo de figuras. Responde preguntas con solidez. | Cumple el tiempo. Buena claridad. Responde adecuadamente. | No cumple tiempo. Poca claridad. Figuras no se explican bien. | Mala preparación. No hay coherencia. | 10% |
+| **Trabajo colaborativo** | Evidencia integración perfecta. Roles intercambiados. Ambos participan equitativamente. | Se nota colaboración, aunque predominó un rol. | Trabajo en paralelo más que colaborativo. | No hay evidencia de colaboración efectiva. | 10% |
+
+---
+
+# 8. CRITERIOS DE ÉXITO Y RECOMENDACIONES
+
+## ✅ Para obtener la máxima calificación
+
+- [ ] **Reproducibilidad:** Tu RMarkdown debe compilar sin errores y generar exactamente los resultados que reportas.
+- [ ] **Profundidad conceptual:** No te limites a definir términos; aplícalos críticamente al caso.
+- [ ] **Creatividad en la discusión:** Propón mecanismos ecológicos alternativos que expliquen los patrones observados.
+- [ ] **Colaboración:** Ambos integrantes deben presentar y dominar tanto el análisis como la teoría.
+- [ ] **Formato profesional:** Figuras con títulos, ejes etiquetados, leyendas claras. Sin errores ortográficos.
+
+## 💡 Recomendaciones adicionales
+
+1. **Usa Quarto en lugar de RMarkdown** si ya lo conoces; ofrece mejores opciones de formato.
+
+2. **Incluye referencias** en formato BibTeX usando el archivo `bibliografia.bib`.
+
+3. **Practica la presentación** con cronómetro. 10 minutos son menos de lo que parece.
+
+4. **Explora paquetes adicionales** como `ggpubr` para gráficos más profesionales o `patchwork` para combinar múltiples figuras.
+
+5. **Documenta tu código** con comentarios en español o inglés, pero sé consistente.
+
+---
+
+# 9. RECURSOS ADICIONALES
+
+## 📖 Lecturas complementarias
+
+| Título | Enlace | Notas |
+|:---|:---|:---|
+| *R for Data Science* (Grolemund & Wickham) | https://r4ds.had.co.nz/ | Referencia para tidyverse |
+| *Ecología con R* (Maestría UNAL) | https://sites.google.com/view/ecologia-con-r/ | Material en español |
+| Índice de Pianka - Explicación | https://en.wikipedia.org/wiki/Niche_overlap | Conceptos básicos |
+
+## 🛠️ Ayuda con R
+
+- **En tu consola:** `?ggplot2` o `help("filter")`
+- **Stack Overflow:** https://stackoverflow.com/questions/tagged/r
+- **RStudio Community:** https://community.rstudio.com/
+
+---
+
+**¡Éxito en esta práctica!**
+
+Recuerda: la ecología no es una lista de definiciones estáticas, sino un entramado dinámico de relaciones que cambian con el contexto. Tu análisis crítico es la herramienta más poderosa para desentrañarlo.
+
+*"En la naturaleza nada existe solo. Todo está en constante interacción, en un baile de dependencias y conflictos que sostiene la vida."*
+
+---
